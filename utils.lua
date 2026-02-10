@@ -2,6 +2,7 @@
 
 local ns = NextUp
 
+-- TODO: Create actionBarPrefixes for ElvUI naming.
 local actionBarPrefixes = {
 	"ActionButton",
 	"MultiBarBottomLeftButton",
@@ -14,6 +15,7 @@ local actionBarPrefixes = {
 	"StanceButton"
 }
 
+-- TODO: Create actionBarPrefixMatrix for ElvUI naming.
 local actionBarPrefixMatrix = {
 	["ActionButton"] = "ACTIONBUTTON",
 	["MultiBarBottomLeftButton"] = "MULTIACTIONBAR1BUTTON",
@@ -24,6 +26,13 @@ local actionBarPrefixMatrix = {
 	["MultiBar6Button"] = "MULTIACTIONBAR6BUTTON",
 	["MultiBar7Button"] = "MULTIACTIONBAR7BUTTON",
 }
+
+------------------------------------------------------------
+-- Function: Returns true if ElvUI is loaded.
+------------------------------------------------------------
+local function IsElvUIInstalled()
+	return false
+end
 
 --[[
 function ns:GetActionButtonBySlot(slotID)

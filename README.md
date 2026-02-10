@@ -23,6 +23,9 @@ Access some settings for look and feel under Options->Addons.
 ## Need Help or need to report a bug?
 Head on over to our [**Github issues**](https://github.com/pande2929/OBC/issues) page.
 
+## Known Issues
+NextUp is not yet compatible with addons that replace Blizzard's default action bars (such as ElvUI).
+
 ## License
 GNU Lesser General Public License version 3 (LGPLv3)
 

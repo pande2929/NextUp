@@ -2,7 +2,6 @@
 
 local ns = NextUp
 local highlightFrame = nil
---local LBG = LibStub("LibButtonGlow-1.0")
 
 ------------------------------------------------------------
 -- Function: Updates the main frame.
