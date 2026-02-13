@@ -578,10 +578,11 @@ end
 ------------------------------------------------------------
 -- Function: Update the main frame.
 ------------------------------------------------------------
-function ns:UpdateHighlightFrame(button)
+--function ns:UpdateHighlightFrame(button)
+function ns:UpdateHighlightFrame(spellID)
 	if not highlightFrame then return end
 
-	if not ns.recSpellID or not button then 
+	if not ns.recSpellID or not spellID then
 		-- Clear everything if this got called with nil values
 		highlightFrame.tex:SetTexture(nil)
 		highlightFrame.highlightText:SetText(nil)
@@ -590,7 +591,7 @@ function ns:UpdateHighlightFrame(button)
 		return 
 	end
 
-	local tex = C_Spell.GetSpellTexture(ns.recSpellID)
+	local tex = C_Spell.GetSpellTexture(spellID)
 	
 	-- Check if glowing
 	--[[
@@ -600,10 +601,13 @@ function ns:UpdateHighlightFrame(button)
 	end
 	]]
 
-	local keybind = ns:GetKeybinds(button)
+	--Apply Dim effect
+	ns:ApplyDimEffect(not ns:IsSpellReady(spellID))
+
+	--local keybind = ns:GetKeybinds(button)
 
 	highlightFrame.tex:SetTexture(tex)
-    highlightFrame.highlightText:SetText(keybind)
+    --highlightFrame.highlightText:SetText(keybind)
 	highlightFrame:SetBackdropColor(0.2, 0.2, 0.2, 1)
 	highlightFrame:SetBackdropBorderColor(0.2, 0.2, 0.2, 1)
 end

@@ -10,14 +10,31 @@ ns.recSpellID = nil
 ------------------------------------------------------------
 local function OnSpellChange()
     -- Get highlighted button and then duplicate the texture
-    local button = ns:GetHighlightedButton()
-	local spellID = ns:GetSpellIDFromButton(button)
+    --local button = ns:GetHighlightedButton()
+	--local spellID = ns:GetSpellIDFromButton(button)
+	local spellID = C_AssistedCombat.GetNextCastSpell()
+
+	--[[
+	local slots = C_ActionBar.FindSpellActionButtons(spellID)
+	print(GetActionText(1))
+
+	if slots then
+		for _, slot in ipairs(slots) do
+			local actionType, id, subType = GetActionInfo(slot)
+			print(id, C_ActionBar.GetActionText(slot))
+		end
+	end
+	]]
 
 	if spellID then
 		ns.recSpellID = spellID
 
 		ns:ApplyDimEffect(not ns:IsSpellReady(spellID))
-		ns:UpdateHighlightFrame(button)
+
+		-- We could greatly simplify this addon by finding a way to link spellID to a keybind.
+		-- spellID -> actionbar button -> keybind
+		--ns:UpdateHighlightFrame(button)
+		ns:UpdateHighlightFrame(spellID)
 	end
 end
 

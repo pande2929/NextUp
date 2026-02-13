@@ -3,6 +3,7 @@
 local ns = NextUp
 
 -- TODO: Create actionBarPrefixes for ElvUI naming.
+-- "ElvUI_BarXButtonX" "ElvUI_BarX"
 local actionBarPrefixes = {
 	"ActionButton",
 	"MultiBarBottomLeftButton",
@@ -30,8 +31,9 @@ local actionBarPrefixMatrix = {
 ------------------------------------------------------------
 -- Function: Returns true if ElvUI is loaded.
 ------------------------------------------------------------
-local function IsElvUIInstalled()
-	return false
+function ns:IsElvUILoaded()
+	local loaded, loading = C_AddOns.IsAddOnLoaded("ElvUI")
+	return loaded or loading
 end
 
 --[[
@@ -53,17 +55,21 @@ end
 ------------------------------------------------------------
 -- Function: Get the currently highlighted button
 ------------------------------------------------------------
+--[[
 function ns:GetHighlightedButton()
 	local highlightedButton = nil
 
-	for _, barPrefix in pairs(actionBarPrefixes) do
-		for i = 1, 12 do
-			local button = _G[barPrefix .. i]
+	-- Find the highlighted button. If ElvUI is installed, a separate workflow is required.
+	if ns:IsElvUILoaded() == false then
+		for _, barPrefix in pairs(actionBarPrefixes) do
+			for i = 1, 12 do
+				local button = _G[barPrefix .. i]
 
-			if button and button:IsVisible() then --don't look at non-visible bars
-				if AssistedCombatManager:IsRecommendedAssistedHighlightButton(button) then
-					highlightedButton = button
-					break
+				if button and button:IsVisible() then --don't look at non-visible bars
+					if AssistedCombatManager:IsRecommendedAssistedHighlightButton(button) then
+						highlightedButton = button
+						break
+					end
 				end
 			end
 		end
@@ -71,14 +77,17 @@ function ns:GetHighlightedButton()
 
 	return highlightedButton
 end
+]]
 
 ------------------------------------------------------------
 -- Function: Get the currently recommended spell.
 ------------------------------------------------------------
+--[[
 function ns:GetHighlightedSpell()
 	local button = ns:GetHighlightedButton()
 	return ns:GetSpellIDFromButton(button)
 end
+]]
 
 ------------------------------------------------------------
 -- Function: Gets action bar button name from a button.
@@ -112,6 +121,7 @@ end
 ------------------------------------------------------------
 -- Function: Gets a spellID from a button.
 ------------------------------------------------------------
+--[[
 function ns:GetSpellIDFromButton(button)
     --if not button or not button.action then return nil end
 	if not button then
@@ -135,6 +145,7 @@ function ns:GetSpellIDFromButton(button)
 
     return spellID
 end
+]]
 
 ------------------------------------------------------------
 -- Function: Checks if spell is ready or not.
@@ -154,10 +165,11 @@ end
 ------------------------------------------------------------
 -- Function: Checks if the spell matches suggested spell.
 ------------------------------------------------------------
+--[[
 function ns:IsRecommendedSpell(spellID)
 	return ns.recSpellID == spellID
 end
-
+]]
 
 ------------------------------------------------------------
 -- Function: Checks if the spell is on the GCD.
