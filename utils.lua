@@ -2,9 +2,9 @@
 
 local ns = NextUp
 
--- TODO: Create actionBarPrefixes for ElvUI naming.
+-- TODO: Create barPrefixes for ElvUI naming.
 -- "ElvUI_BarXButtonX" "ElvUI_BarX"
-local actionBarPrefixes = {
+local barPrefixes = {
 	"ActionButton",
 	"MultiBarBottomLeftButton",
 	"MultiBarBottomRightButton",
@@ -12,8 +12,17 @@ local actionBarPrefixes = {
 	"MultiBarLeftButton",
 	"MultiBar5Button",
 	"MultiBar6Button",
-	"MultiBar7Button",
-	"StanceButton"
+	"MultiBar7Button"
+	--[[
+	"ElvUI_Bar1Button",
+	"ElvUI_Bar2Button",
+	"ElvUI_Bar3Button",
+	"ElvUI_Bar4Button",
+	"ElvUI_Bar5Button",
+	"ElvUI_Bar6Button",
+	"ElvUI_Bar7Button",
+	"ElvUI_Bar8Button"
+	]]
 }
 
 -- TODO: Create actionBarPrefixMatrix for ElvUI naming.
@@ -25,7 +34,17 @@ local actionBarPrefixMatrix = {
 	["MultiBarLeftButton"] = "MULTIACTIONBAR4BUTTON",
 	["MultiBar5Button"] = "MULTIACTIONBAR5BUTTON",
 	["MultiBar6Button"] = "MULTIACTIONBAR6BUTTON",
-	["MultiBar7Button"] = "MULTIACTIONBAR7BUTTON",
+	["MultiBar7Button"] = "MULTIACTIONBAR7BUTTON"
+	--[[
+	["ElvUI_Bar1Button"] = "ACTIONBUTTON",
+	["ElvUI_Bar2Button"] = "MULTIACTIONBAR1BUTTON",
+	["ElvUI_Bar3Button"] = "MULTIACTIONBAR2BUTTON",
+	["ElvUI_Bar4Button"] = "MULTIACTIONBAR3BUTTON",
+	["ElvUI_Bar5Button"] = "MULTIACTIONBAR4BUTTON",
+	["ElvUI_Bar6Button"] = "MULTIACTIONBAR5BUTTON",
+	["ElvUI_Bar7Button"] = "MULTIACTIONBAR6BUTTON",
+	["ElvUI_Bar8Button"] = "MULTIACTIONBAR7BUTTON"
+	]]
 }
 
 ------------------------------------------------------------
@@ -36,116 +55,59 @@ function ns:IsElvUILoaded()
 	return loaded or loading
 end
 
---[[
-function ns:GetActionButtonBySlot(slotID)
-	for _, barPrefix in pairs(actionBarPrefixes) do
+------------------------------------------------------------
+-- Function: Builds a matrix of keybinds to lookup and returns it.
+------------------------------------------------------------
+local function GenerateKeybindMatrix()
+	local slotToKeybindMatrix = {}
+
+	for _, barPrefix in pairs(barPrefixes) do
 		for i = 1, 12 do
-			local button = _G[barPrefix .. i]
+			local name = barPrefix .. i
+			local button = _G[name]
 
 			if button then
-				if (button.action == slotID) then
-					return button
-				end
-			end
-		end
-	end
-end
-]]
+				local actionSlot = button.action
 
-------------------------------------------------------------
--- Function: Get the currently highlighted button
-------------------------------------------------------------
---[[
-function ns:GetHighlightedButton()
-	local highlightedButton = nil
+				-- Needs to be name of actionbutton
+				local actionBarButtonName = actionBarPrefixMatrix[barPrefix] .. i
+				local keys = { GetBindingKey(actionBarButtonName) }
 
-	-- Find the highlighted button. If ElvUI is installed, a separate workflow is required.
-	if ns:IsElvUILoaded() == false then
-		for _, barPrefix in pairs(actionBarPrefixes) do
-			for i = 1, 12 do
-				local button = _G[barPrefix .. i]
+				if #keys > 0 and actionSlot then
+					local binding = keys[1] -- default to first binding
 
-				if button and button:IsVisible() then --don't look at non-visible bars
-					if AssistedCombatManager:IsRecommendedAssistedHighlightButton(button) then
-						highlightedButton = button
-						break
-					end
+					binding = binding:upper():gsub("SHIFT", "S")
+
+					-- Save to keybind matrix
+					slotToKeybindMatrix[actionSlot] = binding
 				end
 			end
 		end
 	end
 
-	return highlightedButton
-end
-]]
-
-------------------------------------------------------------
--- Function: Get the currently recommended spell.
-------------------------------------------------------------
---[[
-function ns:GetHighlightedSpell()
-	local button = ns:GetHighlightedButton()
-	return ns:GetSpellIDFromButton(button)
-end
-]]
-
-------------------------------------------------------------
--- Function: Gets action bar button name from a button.
-------------------------------------------------------------
-local function GetActionBarButtonName(button)
-	local prefix, num = button:GetName():match("^(.-)(%d+)$")
-	return actionBarPrefixMatrix[prefix] .. num
+	return slotToKeybindMatrix
 end
 
 ------------------------------------------------------------
 -- Function: Returns the keybinds for a given action button.
 ------------------------------------------------------------
-function ns:GetKeybinds(button)
-	if not button or not button.action then
-		return nil
-	end
-	
-	local binding = ""
-	local name = GetActionBarButtonName(button)
-	local keys = { GetBindingKey(name) }
-
-	if #keys > 0 then
-		binding = keys[1] --default to first binding
-	end
-
-	binding = binding:upper():gsub("SHIFT", "S")
-
-	return binding
-end
-
-------------------------------------------------------------
--- Function: Gets a spellID from a button.
-------------------------------------------------------------
---[[
-function ns:GetSpellIDFromButton(button)
-    --if not button or not button.action then return nil end
-	if not button then
+function ns:GetKeybinds(spellID)
+	if not spellID then
 		return nil
 	end
 
-	spellID = nil
+	-- Get action slots for spell.
+	local slots = C_ActionBar.FindSpellActionButtons(spellID)
+	local slotToKeybindMatrix = GenerateKeybindMatrix()
 
-	if button.action then
-		local actionType, id, subType = GetActionInfo(button.action)
-
-		if actionType == "spell" then
-			spellID = id
-		elseif actionType == "macro" and subType == "spell" then
-			spellID = id
+	if slots then
+		for _, slot in ipairs(slots) do
+			if slotToKeybindMatrix[slot] then
+				return slotToKeybindMatrix[slot]
+			end
 		end
-	else
-		_, _, _, stanceSpellID = GetShapeshiftFormInfo(button:GetID())
-		spellID = stanceSpellID
 	end
-
-    return spellID
 end
-]]
 
 ------------------------------------------------------------
 -- Function: Checks if spell is ready or not.
@@ -161,15 +123,6 @@ function ns:IsSpellReady(spellID)
 
     return true
 end
-
-------------------------------------------------------------
--- Function: Checks if the spell matches suggested spell.
-------------------------------------------------------------
---[[
-function ns:IsRecommendedSpell(spellID)
-	return ns.recSpellID == spellID
-end
-]]
 
 ------------------------------------------------------------
 -- Function: Checks if the spell is on the GCD.

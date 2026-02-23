@@ -9,31 +9,14 @@ ns.recSpellID = nil
 -- Function: When assisted highlight spell changes.
 ------------------------------------------------------------
 local function OnSpellChange()
-    -- Get highlighted button and then duplicate the texture
-    --local button = ns:GetHighlightedButton()
-	--local spellID = ns:GetSpellIDFromButton(button)
+    -- Get suggested spell.
 	local spellID = C_AssistedCombat.GetNextCastSpell()
-
-	--[[
-	local slots = C_ActionBar.FindSpellActionButtons(spellID)
-	print(GetActionText(1))
-
-	if slots then
-		for _, slot in ipairs(slots) do
-			local actionType, id, subType = GetActionInfo(slot)
-			print(id, C_ActionBar.GetActionText(slot))
-		end
-	end
-	]]
+	--print("OnSpellChange called.")
 
 	if spellID then
 		ns.recSpellID = spellID
 
 		ns:ApplyDimEffect(not ns:IsSpellReady(spellID))
-
-		-- We could greatly simplify this addon by finding a way to link spellID to a keybind.
-		-- spellID -> actionbar button -> keybind
-		--ns:UpdateHighlightFrame(button)
 		ns:UpdateHighlightFrame(spellID)
 	end
 end
@@ -70,7 +53,21 @@ function ns:RegisterEvents()
 	end)
 
 	-- Track when assisted highlight button changes.
-	EventRegistry:RegisterCallback("AssistedCombatManager.OnAssistedHighlightSpellChange", OnSpellChange)
+	-- Note: ElvUI causes this event to never fire.
+	-- It looks like ElvUI doesn't rely on AssistedCombatManager.OnAssistedHighlightSpellChange 
+	-- being triggered, but rather a timer function.
+	-- So, if ElvUI is loaded, use a hooksecurefunc on AB:AssistedOnUpdate instead.
+	if (ns:IsElvUILoaded() == false) then
+		EventRegistry:RegisterCallback("AssistedCombatManager.OnAssistedHighlightSpellChange", OnSpellChange)
+	else
+		--[[
+		local E = unpack(ElvUI)
+		local AB = E:GetModule('ActionBars')
+		print(AB)
+		hooksecurefunc(AB, "AssistedOnUpdate", OnSpellChange)
+		]]
+		EventRegistry:RegisterCallback("AssistedCombatManager.OnAssistedHighlightSpellChange", OnSpellChange)
+	end
 
     -- Track whenever player uses an ability.
     hooksecurefunc("UseAction", function(slot, checkCursor, onSelf)
@@ -81,42 +78,6 @@ function ns:RegisterEvents()
 			-- Test for both ChargeCooldown and ActionbuttonCooldown. If true, then it's out of charges
         end
     end)
-
-	-- Create listeners for spell activation events
-	--[[
-	if NextUp_SavedVariables.settings.showOverlayGlow then
-		local s = CreateFrame("Frame")
-		s:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_SHOW")
-		s:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_HIDE")
-
-		s:SetScript("OnEvent", function(self, event, spellID)
-			if ns:IsRecommendedSpell(spellID) then
-				if event == "SPELL_ACTIVATION_OVERLAY_GLOW_SHOW" then
-					-- show overlay glow
-					ns:ShowOverlayGlow(true)
-				elseif event == "SPELL_ACTIVATION_OVERLAY_GLOW_HIDE" then
-					-- hide overlay glow
-					ns:ShowOverlayGlow(false)
-				end
-			end
-		end)
-	end
-	]]
-
-	--[[
-	local x = CreateFrame("Frame")
-	x:RegisterEvent("SPELL_UPDATE_CHARGES")
-	x:SetScript("OnEvent", function(self, event)
-		print(event)
-		local spellID = ns.recSpellID
-
-		local scInfo = C_Spell.GetSpellCharges(spellID)
-
-		if scInfo then
-			print(scInfo.currentCharges == 0)
-		end
-	end)
-	]]
 
 	-- Listen for spell readiness updates
 	local g = CreateFrame("Frame")
@@ -176,7 +137,7 @@ function ns:RegisterEvents()
 				]]
 
 				if ns:IsSpellOnGCD(spellID) then
-					local scInfo = C_Spell.GetSpellCharges(spellID)
+					--local scInfo = C_Spell.GetSpellCharges(spellID)
 
 					local cdInfo = C_Spell.GetSpellCooldown(61304)
 					ns:ShowCooldownAnimation(cdInfo.startTime, cdInfo.duration)
@@ -197,6 +158,7 @@ function ns:RegisterEvents()
 
             if startTimeMS and endTimeMS then
 			    ns:ShowCooldownAnimation(startTimeMS / 1000.0, (endTimeMS - startTimeMS) / 1000.0)
+				--print(startTimeMS / 1000.0, (endTimeMS - startTimeMS) / 1000.0)
 		    end
 		elseif
 			event == "UNIT_SPELLCAST_INTERRUPTED" or 

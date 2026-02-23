@@ -27,22 +27,22 @@ local effectTicker = C_Timer.NewTicker(0.15, function()
     end
 end)
 
+--[[
+local keybindTicker = C_Timer.NewTicker(30, function()
+    ns:BuildKeybindMatrix()
+end)
+]]
+
 -- Check if ns.recSpellID is currently selected, if not then update it.
 -- This is sort of a failsafe for uncommon situations.
 -- We can reproduce this by not having the next cast spell on any toolbar.
 --[[
 local verifyTicker = C_Timer.NewTicker(1, function()
-    local button = ns:GetHighlightedButton()
     local spellID = C_AssistedCombat.GetNextCastSpell(true)
 	
-    if button then -- this will be nil if nothing is highlighted
-        if spellID and spellID ~= ns.recSpellID then
-            ns.recSpellID = spellID
-            ns:UpdateHighlightFrame(spellID)
-        end
-    else
-        ns.recSpellID = nil
-        ns:UpdateHighlightFrame(nil)
+    if spellID and spellID ~= ns.recSpellID then
+        ns.recSpellID = spellID
+        ns:UpdateHighlightFrame(spellID)
     end
 end)
 ]]

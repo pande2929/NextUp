@@ -20,7 +20,7 @@ local function RedrawHighlightFrame()
 		NextUp_SavedVariables.settings.offsetX,
 		NextUp_SavedVariables.settings.offsetY
 	)
-	
+
     highlightFrame.tex:SetPoint("TOPLEFT", highlightFrame, "TOPLEFT", 2, -2)
     highlightFrame.tex:SetPoint("BOTTOMRIGHT", highlightFrame, "BOTTOMRIGHT", -2, 2)
     highlightFrame.tex:SetTexCoord(0.06, 0.94, 0.06, 0.94)
@@ -60,7 +60,7 @@ local function CreateHighlightFrame()
 
     -- Text
 	highlightFrame.highlightText = highlightFrame:CreateFontString(nil, "OVERLAY", "NumberFontNormal")
-    
+
     -- Texture
     highlightFrame.tex = highlightFrame:CreateTexture()
 
@@ -101,7 +101,7 @@ local function UpdateActionBars()
         bar:SetAlpha(0)
     else
         local bar = MainActionBar
-        bar:SetAlpha(1)        
+        bar:SetAlpha(1)
     end
 
     if NextUp_SavedVariables.settings.hideActionBar2 then
@@ -109,7 +109,7 @@ local function UpdateActionBars()
         bar:SetAlpha(0)
     else
         local bar = MultiBarBottomLeft
-        bar:SetAlpha(1)        
+        bar:SetAlpha(1)
     end
 
     if NextUp_SavedVariables.settings.hideActionBar3 then
@@ -117,7 +117,7 @@ local function UpdateActionBars()
         bar:SetAlpha(0)
     else
         local bar = MultiBarBottomRight
-        bar:SetAlpha(1)        
+        bar:SetAlpha(1)
     end
 
 	--[[
@@ -496,7 +496,7 @@ local function CreateSettingsFrame()
 	]]
 
     -- Hide action bar 1
-    do 
+    do
         local name = "Hide Actionbar 1"
         local variable = "Hide_Actionbar1"
         local variableKey = "hideActionBar1"
@@ -509,9 +509,9 @@ local function CreateSettingsFrame()
         local tooltip = "Show or hide the primary action bar. Useful since Blizzard's assisted highlight doesn't use actions on disabled bars."
         Settings.CreateCheckbox(category, setting, tooltip)
     end
-    
+
     -- Hide action bar 2
-    do 
+    do
         local name = "Hide Actionbar 2"
         local variable = "Hide_Actionbar2"
         local variableKey = "hideActionBar2"
@@ -524,9 +524,9 @@ local function CreateSettingsFrame()
         local tooltip = "Show or hide Action Bar 2. Useful since Blizzard's assisted highlight doesn't use actions on disabled bars."
         Settings.CreateCheckbox(category, setting, tooltip)
     end
-    
+
     -- Hide action bar 3
-    do 
+    do
         local name = "Hide Actionbar 3"
         local variable = "Hide_Actionbar3"
         local variableKey = "hideActionBar3"
@@ -578,9 +578,10 @@ end
 ------------------------------------------------------------
 -- Function: Update the main frame.
 ------------------------------------------------------------
---function ns:UpdateHighlightFrame(button)
 function ns:UpdateHighlightFrame(spellID)
-	if not highlightFrame then return end
+	if not highlightFrame then 
+		return 
+	end
 
 	if not ns.recSpellID or not spellID then
 		-- Clear everything if this got called with nil values
@@ -588,26 +589,19 @@ function ns:UpdateHighlightFrame(spellID)
 		highlightFrame.highlightText:SetText(nil)
 		highlightFrame:SetBackdropColor(0.2, 0.2, 0.2, 0)
 		highlightFrame:SetBackdropBorderColor(0.2, 0.2, 0.2, 0)
-		return 
+		return
 	end
 
 	local tex = C_Spell.GetSpellTexture(spellID)
-	
-	-- Check if glowing
-	--[[
-	if NextUp_SavedVariables.settings.showOverlayGlow then
-		local glowing = C_SpellActivationOverlay.IsSpellOverlayed(spellID)
-		ns:ShowOverlayGlow(glowing)
-	end
-	]]
 
 	--Apply Dim effect
 	ns:ApplyDimEffect(not ns:IsSpellReady(spellID))
 
-	--local keybind = ns:GetKeybinds(button)
+	-- Get Keybind
+	local keybind = ns:GetKeybinds(spellID)
 
 	highlightFrame.tex:SetTexture(tex)
-    --highlightFrame.highlightText:SetText(keybind)
+    highlightFrame.highlightText:SetText(keybind)
 	highlightFrame:SetBackdropColor(0.2, 0.2, 0.2, 1)
 	highlightFrame:SetBackdropBorderColor(0.2, 0.2, 0.2, 1)
 end
