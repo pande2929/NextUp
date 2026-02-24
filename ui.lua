@@ -495,50 +495,54 @@ local function CreateSettingsFrame()
     end
 	]]
 
-    -- Hide action bar 1
-    do
-        local name = "Hide Actionbar 1"
-        local variable = "Hide_Actionbar1"
-        local variableKey = "hideActionBar1"
-        local variableTbl = NextUp_SavedVariables.settings
-        local defaultValue = false
+	-- Only show the "Hide Action Bar X" checkboxes if we're using the default bars.
+	-- Users will want to hide/show action bars within ElvUI settings.
+	if (ns:IsElvUILoaded() == false) then
+		-- Hide action bar 1
+		do
+			local name = "Hide Actionbar 1"
+			local variable = "Hide_Actionbar1"
+			local variableKey = "hideActionBar1"
+			local variableTbl = NextUp_SavedVariables.settings
+			local defaultValue = false
 
-        local setting = Settings.RegisterAddOnSetting(category, variable, variableKey, variableTbl, type(defaultValue), name, defaultValue)
-        setting:SetValueChangedCallback(ns.OnSettingChanged)
+			local setting = Settings.RegisterAddOnSetting(category, variable, variableKey, variableTbl, type(defaultValue), name, defaultValue)
+			setting:SetValueChangedCallback(ns.OnSettingChanged)
 
-        local tooltip = "Show or hide the primary action bar. Useful since Blizzard's assisted highlight doesn't use actions on disabled bars."
-        Settings.CreateCheckbox(category, setting, tooltip)
-    end
+			local tooltip = "Show or hide the primary action bar. Useful since Blizzard's assisted highlight doesn't use actions on disabled bars."
+			Settings.CreateCheckbox(category, setting, tooltip)
+		end
 
-    -- Hide action bar 2
-    do
-        local name = "Hide Actionbar 2"
-        local variable = "Hide_Actionbar2"
-        local variableKey = "hideActionBar2"
-        local variableTbl = NextUp_SavedVariables.settings
-        local defaultValue = false
+		-- Hide action bar 2
+		do
+			local name = "Hide Actionbar 2"
+			local variable = "Hide_Actionbar2"
+			local variableKey = "hideActionBar2"
+			local variableTbl = NextUp_SavedVariables.settings
+			local defaultValue = false
 
-        local setting = Settings.RegisterAddOnSetting(category, variable, variableKey, variableTbl, type(defaultValue), name, defaultValue)
-        setting:SetValueChangedCallback(ns.OnSettingChanged)
+			local setting = Settings.RegisterAddOnSetting(category, variable, variableKey, variableTbl, type(defaultValue), name, defaultValue)
+			setting:SetValueChangedCallback(ns.OnSettingChanged)
 
-        local tooltip = "Show or hide Action Bar 2. Useful since Blizzard's assisted highlight doesn't use actions on disabled bars."
-        Settings.CreateCheckbox(category, setting, tooltip)
-    end
+			local tooltip = "Show or hide Action Bar 2. Useful since Blizzard's assisted highlight doesn't use actions on disabled bars."
+			Settings.CreateCheckbox(category, setting, tooltip)
+		end
 
-    -- Hide action bar 3
-    do
-        local name = "Hide Actionbar 3"
-        local variable = "Hide_Actionbar3"
-        local variableKey = "hideActionBar3"
-        local variableTbl = NextUp_SavedVariables.settings
-        local defaultValue = false
+		-- Hide action bar 3
+		do
+			local name = "Hide Actionbar 3"
+			local variable = "Hide_Actionbar3"
+			local variableKey = "hideActionBar3"
+			local variableTbl = NextUp_SavedVariables.settings
+			local defaultValue = false
 
-        local setting = Settings.RegisterAddOnSetting(category, variable, variableKey, variableTbl, type(defaultValue), name, defaultValue)
-        setting:SetValueChangedCallback(ns.OnSettingChanged)
+			local setting = Settings.RegisterAddOnSetting(category, variable, variableKey, variableTbl, type(defaultValue), name, defaultValue)
+			setting:SetValueChangedCallback(ns.OnSettingChanged)
 
-        local tooltip = "Show or hide the Action Bar 3. Useful since Blizzard's assisted highlight doesn't use actions on disabled bars."
-        Settings.CreateCheckbox(category, setting, tooltip)
-    end
+			local tooltip = "Show or hide the Action Bar 3. Useful since Blizzard's assisted highlight doesn't use actions on disabled bars."
+			Settings.CreateCheckbox(category, setting, tooltip)
+		end
+	end
 
 	-- Hide cast bar
 	--[[

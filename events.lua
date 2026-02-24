@@ -11,7 +11,6 @@ ns.recSpellID = nil
 local function OnSpellChange()
     -- Get suggested spell.
 	local spellID = C_AssistedCombat.GetNextCastSpell()
-	--print("OnSpellChange called.")
 
 	if spellID then
 		ns.recSpellID = spellID
@@ -28,6 +27,19 @@ local function OnLeaveCombat()
 	if ns.dirtyUI then
 		ns:RefreshUI()
 	end
+end
+
+------------------------------------------------------------
+-- Function: Calls the ElvUI AssistedOnUpdate function and then
+-- triggers AssistedCombatManager.OnAssistedHighlightSpellChange
+------------------------------------------------------------
+function ns:AssistedOnUpdate(elapsed)
+	local E = unpack(ElvUI)
+	local AB = E:GetModule('ActionBars')
+	
+	AB.AssistedOnUpdate(self, elapsed)
+
+	EventRegistry:TriggerEvent("AssistedCombatManager.OnAssistedHighlightSpellChange");
 end
 
 ------------------------------------------------------------
@@ -53,20 +65,12 @@ function ns:RegisterEvents()
 	end)
 
 	-- Track when assisted highlight button changes.
-	-- Note: ElvUI causes this event to never fire.
-	-- It looks like ElvUI doesn't rely on AssistedCombatManager.OnAssistedHighlightSpellChange 
-	-- being triggered, but rather a timer function.
-	-- So, if ElvUI is loaded, use a hooksecurefunc on AB:AssistedOnUpdate instead.
-	if (ns:IsElvUILoaded() == false) then
-		EventRegistry:RegisterCallback("AssistedCombatManager.OnAssistedHighlightSpellChange", OnSpellChange)
-	else
-		--[[
-		local E = unpack(ElvUI)
-		local AB = E:GetModule('ActionBars')
-		print(AB)
-		hooksecurefunc(AB, "AssistedOnUpdate", OnSpellChange)
-		]]
-		EventRegistry:RegisterCallback("AssistedCombatManager.OnAssistedHighlightSpellChange", OnSpellChange)
+	EventRegistry:RegisterCallback("AssistedCombatManager.OnAssistedHighlightSpellChange", OnSpellChange)
+
+	if (ns:IsElvUILoaded()) then
+		-- ElvUI overrides the built in AssistedCombatManager.OnUpdate function with its own. 
+		-- We need to use ours instead and then call theirs.
+		_G.AssistedCombatManager.OnUpdate = ns.AssistedOnUpdate
 	end
 
     -- Track whenever player uses an ability.
@@ -74,8 +78,6 @@ function ns:RegisterEvents()
         local actionType, spellID = GetActionInfo(slot)
         if spellID then
             lastCastSpell = spellID
-
-			-- Test for both ChargeCooldown and ActionbuttonCooldown. If true, then it's out of charges
         end
     end)
 
