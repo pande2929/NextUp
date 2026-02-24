@@ -125,7 +125,7 @@ function ns:RegisterEvents()
 			local _, _, _, startTimeMS, endTimeMS = UnitChannelInfo("player")
 
 			-- Check for empowered and channeled casts. Otherwise proceed.
-			if startTimeMS == nil and endTimeMS == nill and lastCastSpell == spellID then
+			if startTimeMS == nil and endTimeMS == nil and lastCastSpell == spellID then
 				-- Nope, just a regular instant cast
 				-- check if spell is on GCD
 				--[[
