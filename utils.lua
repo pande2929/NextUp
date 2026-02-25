@@ -13,16 +13,6 @@ local barPrefixes = {
 	"MultiBar5Button",
 	"MultiBar6Button",
 	"MultiBar7Button"
-	--[[
-	"ElvUI_Bar1Button",
-	"ElvUI_Bar2Button",
-	"ElvUI_Bar3Button",
-	"ElvUI_Bar4Button",
-	"ElvUI_Bar5Button",
-	"ElvUI_Bar6Button",
-	"ElvUI_Bar7Button",
-	"ElvUI_Bar8Button"
-	]]
 }
 
 -- TODO: Create actionBarPrefixMatrix for ElvUI naming.
@@ -35,16 +25,6 @@ local actionBarPrefixMatrix = {
 	["MultiBar5Button"] = "MULTIACTIONBAR5BUTTON",
 	["MultiBar6Button"] = "MULTIACTIONBAR6BUTTON",
 	["MultiBar7Button"] = "MULTIACTIONBAR7BUTTON"
-	--[[
-	["ElvUI_Bar1Button"] = "ACTIONBUTTON",
-	["ElvUI_Bar2Button"] = "MULTIACTIONBAR1BUTTON",
-	["ElvUI_Bar3Button"] = "MULTIACTIONBAR2BUTTON",
-	["ElvUI_Bar4Button"] = "MULTIACTIONBAR3BUTTON",
-	["ElvUI_Bar5Button"] = "MULTIACTIONBAR4BUTTON",
-	["ElvUI_Bar6Button"] = "MULTIACTIONBAR5BUTTON",
-	["ElvUI_Bar7Button"] = "MULTIACTIONBAR6BUTTON",
-	["ElvUI_Bar8Button"] = "MULTIACTIONBAR7BUTTON"
-	]]
 }
 
 ------------------------------------------------------------
