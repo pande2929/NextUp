@@ -19,7 +19,7 @@ Just install and you're good to go. If the Assisted Highlight feature is not ena
 Access some settings for look and feel under Options->Addons.
 
 ## Need Help or need to report a bug?
-Head on over to our [**Github issues**](https://github.com/pande2929/OBC/issues) page.
+Head on over to our [**Github issues**](https://github.com/pande2929/NextUp/issues) page.
 
 ## Known Issues
 NextUp is experimentally compatible with ElvUI and Bartender4. I am working on ironing out bugs, but for the most part NextUp seems functional with these addons now.
