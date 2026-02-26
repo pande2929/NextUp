@@ -497,7 +497,7 @@ local function CreateSettingsFrame()
 
 	-- Only show the "Hide Action Bar X" checkboxes if we're using the default bars.
 	-- Users will want to hide/show action bars within ElvUI settings.
-	if (ns:IsElvUILoaded() == false) then
+	if (ns.UsingElvUI == false) then
 		-- Hide action bar 1
 		do
 			local name = "Hide Actionbar 1"
@@ -602,7 +602,7 @@ function ns:UpdateHighlightFrame(spellID)
 	ns:ApplyDimEffect(not ns:IsSpellReady(spellID))
 
 	-- Get Keybind
-	local keybind = ns:GetKeybinds(spellID)
+	local keybind = ns:GetABKeybind(spellID)
 
 	highlightFrame.tex:SetTexture(tex)
     highlightFrame.highlightText:SetText(keybind)

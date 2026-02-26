@@ -64,10 +64,13 @@ function ns:RegisterEvents()
 		end
 	end)
 
+	-- Print all action slots
+	--ns:PrintActionBarInfo()
+
 	-- Track when assisted highlight button changes.
 	EventRegistry:RegisterCallback("AssistedCombatManager.OnAssistedHighlightSpellChange", OnSpellChange)
 
-	if (ns:IsElvUILoaded()) then
+	if (ns.UsingElvUI == true) then
 		-- ElvUI overrides the built in AssistedCombatManager.OnUpdate function with its own. 
 		-- We need to use ours instead and then call theirs.
 		_G.AssistedCombatManager.OnUpdate = ns.AssistedOnUpdate
@@ -75,7 +78,7 @@ function ns:RegisterEvents()
 
     -- Track whenever player uses an ability.
     hooksecurefunc("UseAction", function(slot, checkCursor, onSelf)
-        local actionType, spellID = GetActionInfo(slot)
+        local _, spellID = GetActionInfo(slot)
         if spellID then
             lastCastSpell = spellID
         end
@@ -239,6 +242,13 @@ login:SetScript("OnEvent", function(_, event, arg1)
 			end
 		end
 		]]
+
+		-- Check for other addons that we need to account for.
+		local elvUILoaded, elvUILoading = C_AddOns.IsAddOnLoaded("ElvUI")
+		ns.UsingElvUI = elvUILoaded or elvUILoading
+
+		local bt4Loaded, bt4Loading = C_AddOns.IsAddOnLoaded("Bartender4")
+		ns.UsingBT4 = bt4Loaded or bt4Loading
 
 		-- Check if Assisted Hightlight is active. If it isn't, then ask the user if they want to enable it.
 		if GetCVarBool("assistedCombatHighlight") then

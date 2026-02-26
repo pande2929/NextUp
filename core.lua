@@ -14,6 +14,9 @@ function NextUp:OnInitialize()
 	-- Event handlers and hooks
 	NextUp:RegisterEvents()
 
+	-- Keybinds
+	--NextUp:GenerateKeybindMapping()
+
 	-- Let timer know that we're ready.
 	NextUp.initialized = true
 end
