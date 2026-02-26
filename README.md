@@ -22,7 +22,7 @@ Access some settings for look and feel under Options->Addons.
 Head on over to our [**Github issues**](https://github.com/pande2929/OBC/issues) page.
 
 ## Known Issues
-NextUp is expirimentally compatible with ElvUI and Bartender4. I am working on ironing out bugs, but for the most part NextUp seems functional with these addons.
+NextUp is experimentally compatible with ElvUI and Bartender4. I am working on ironing out bugs, but for the most part NextUp seems functional with these addons.
 
 ## License
 GNU Lesser General Public License version 3 (LGPLv3)
