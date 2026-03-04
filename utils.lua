@@ -130,7 +130,7 @@ local function LookUpKeyBind(actionSlot)
 				if #keys > 0 and slot == actionSlot then
 					local binding = keys[1] -- default to first binding
 
-					binding = binding:upper():gsub("SHIFT", "S"):gsub("BUTTON", "B"):gsub("ALT", "A"):gsub("CTRL", "C")
+					binding = binding:upper():gsub("SHIFT", "S"):gsub("BUTTON", "B"):gsub("ALT", "A"):gsub("CTRL", "C"):gsub("SPACE", "SPC")
 					return binding
 				end
 			end

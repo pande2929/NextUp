@@ -1,7 +1,7 @@
 ## Interface: 120001
 ## Title: NextUp
 ## Author: Pande
-## Version 0.81
+## Version 0.82
 ## IconTexture: Interface\AddOns\NextUp\Textures\NextUp.tga
 
 core.lua
