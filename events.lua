@@ -20,12 +20,30 @@ local function OnSpellChange()
 	end
 end
 
+local function OnEnterCombat()
+	-- Show the overlay
+	ns:Show(true)
+end
+
 ------------------------------------------------------------
 -- Function: When player leaves combat.
 ------------------------------------------------------------
 local function OnLeaveCombat()
 	if ns.dirtyUI then
 		ns:RefreshUI()
+	end
+
+	-- Hide the overlay
+	if NextUp_SavedVariables.settings.onlyShowInCombat then
+		ns:Show(false)
+	end
+end
+
+local function OnCombatStateChange(self, event)
+	if event == "PLAYER_REGEN_DISABLED" then
+		OnEnterCombat()
+	elseif event == "PLAYER_REGEN_ENABLED" then
+		OnLeaveCombat()
 	end
 end
 
@@ -49,7 +67,13 @@ function ns:RegisterEvents()
     -- Track combat state.
     local c = CreateFrame("Frame")
     c:RegisterEvent("PLAYER_REGEN_ENABLED")
-    c:SetScript("OnEvent", OnLeaveCombat)
+	c:RegisterEvent("PLAYER_REGEN_DISABLED")
+	c:SetScript("OnEvent", OnCombatStateChange)
+    --c:SetScript("OnEvent", OnLeaveCombat)
+
+	--local c1 = CreateFrame("Frame")
+	--c1:RegisterEvent("PLAYER_REGEN_DISABLED")
+	--c1:SetScript("OnEvent", OnEnterCombat)
 
 	-- Track specialization changed
 	-- Necessary since I'm currently seeing an issue where assisted highlight needs to be disabled and re-enabled.
@@ -219,7 +243,8 @@ login:SetScript("OnEvent", function(_, event, arg1)
                 hideActionBar2 = false,
                 hideActionBar3 = false,
 				hideCastbar = false,
-				enabled = true
+				enabled = true,
+				onlyShowInCombat = false
 			}
 		end
 

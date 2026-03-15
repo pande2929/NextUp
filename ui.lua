@@ -478,6 +478,20 @@ local function CreateSettingsFrame()
 		Settings.CreateSlider(category, setting, options, tooltip)
 	end
 
+	do
+		local name = "Only Show in Combat"
+		local variable = "Only_Show_In_Combat"
+		local variableKey = "onlyShowInCombat"
+		local variableTbl = NextUp_SavedVariables.settings
+		local defaultValue = false
+
+		local setting = Settings.RegisterAddOnSetting(category, variable, variableKey, variableTbl, type(defaultValue), name, defaultValue)
+		setting:SetValueChangedCallback(ns.OnSettingChanged)
+
+		local tooltip = "When out of combat hide the NextUp display."
+		Settings.CreateCheckbox(category, setting, tooltip)
+	end
+
 	-- Show/hide Overlay Glow
 	--[[
     do 
@@ -616,6 +630,13 @@ end
 function ns:RefreshUI()
     RedrawHighlightFrame()
     UpdateActionBars()
+
+	--Show or Hide
+	if NextUp_SavedVariables.settings.onlyShowInCombat then
+		ns:Show(false)
+	else
+		ns:Show(true)
+	end
 end
 
 ------------------------------------------------------------
@@ -625,6 +646,13 @@ function ns:InitializeUI()
     CreateHighlightFrame()
     UpdateActionBars()
     CreateSettingsFrame()
+
+	--Show or Hide
+	if NextUp_SavedVariables.settings.onlyShowInCombat then
+		ns:Show(false)
+	else
+		ns:Show(true)
+	end
 end
 
 ------------------------------------------------------------
@@ -685,5 +713,16 @@ function ns:ShowOverlayGlow(show)
 		LBG.ShowOverlayGlow(highlightFrame)
 	else
 		LBG.HideOverlayGlow(highlightFrame)
+	end
+end
+
+------------------------------------------------------------
+-- Function: Show/hide the primary overlay.
+------------------------------------------------------------
+function ns:Show(show)
+	if show == true then
+		highlightFrame:SetAlpha(1)
+	else
+		highlightFrame:SetAlpha(0)
 	end
 end
