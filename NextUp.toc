@@ -1,4 +1,4 @@
-## Interface: 120001, 120005
+## Interface: 120007
 ## Title: NextUp
 ## Author: Pande
 ## Version 0.9
